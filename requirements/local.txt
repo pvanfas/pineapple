@@ -2,7 +2,7 @@
 
 Werkzeug[watchdog]==2.2.2 # https://github.com/pallets/werkzeug
 ipdb==0.13.9  # https://github.com/gotcha/ipdb
-psycopg2-binary==2.9.3  # https://github.com/psycopg/psycopg2
+psycopg2-binary==2.9.4  # https://github.com/psycopg/psycopg2
 
 # Testing
 # ------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ sphinx-autobuild==2021.3.14 # https://github.com/GaretJax/sphinx-autobuild
 flake8==5.0.4  # https://github.com/PyCQA/flake8
 flake8-isort==4.2.0  # https://github.com/gforcada/flake8-isort
 coverage==6.5.0  # https://github.com/nedbat/coveragepy
-black==22.8.0  # https://github.com/psf/black
+black==22.10.0  # https://github.com/psf/black
 pylint-django==2.5.3  # https://github.com/PyCQA/pylint-django
 pre-commit==2.20.0  # https://github.com/pre-commit/pre-commit
 
