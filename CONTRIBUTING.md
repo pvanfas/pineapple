@@ -1,6 +1,4 @@
----
-title: Contributing to this project
----
+# Contributing to this project
 
 When contributing to this repository, please first discuss the change
 you wish to make via issue with the owners of this repository before
