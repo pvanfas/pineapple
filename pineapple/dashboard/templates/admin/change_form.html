@@ -4,7 +4,7 @@
 
 {% block extrastyle %}
     {{ block.super }}
-    <link rel="stylesheet" href="{% static 'vendor/select2/css/select2.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
 {% endblock %}
 
 {% block extrahead %}
@@ -124,10 +124,10 @@
 
 {% block extrajs %}
     {{  block.super }}
-    <script type="text/javascript" src="{% static 'vendor/select2/js/select2.min.js' %}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script type="text/javascript" src="{% static 'dashboard/js/change_form.js' %}"></script>
     {% if dashboard_settings.related_modal_active %}
-    <script type="text/javascript" src="{% static 'dashboard/plugins/bootstrap-show-modal/bootstrap-show-modal.min.js' %}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap-show-modal@5.0.2/src/bootstrap-show-modal.min.js"></script>
     <script type="text/javascript" src="{% static 'dashboard/js/related-modal.js' %}"></script>
     {% endif %}
 {% endblock %}

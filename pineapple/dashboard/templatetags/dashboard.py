@@ -192,7 +192,7 @@ def get_user_avatar(user: AbstractUser) -> str:
         - URLField/Charfield on the model
         - A callable that receives the user instance e.g lambda u: u.profile.image.url
     """
-    no_avatar = static("vendor/adminlte/img/user2-160x160.jpg")
+    no_avatar = static("dashboard/img/user2-160x160.jpg")
     options = get_settings()
     avatar_field_name: Optional[Union[str, Callable]] = options.get("user_avatar")
 

@@ -8,8 +8,14 @@ class DashboardSelect(Select):
     @property
     def media(self):
         return forms.Media(
-            css={"all": ("vendor/select2/css/select2.min.css",)},
-            js=("vendor/select2/js/select2.min.js",),
+            css={
+                "all": (
+                    "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css",
+                )
+            },
+            js=(
+                "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js",
+            ),
         )
 
 
@@ -23,6 +29,12 @@ class DashboardSelectMultiple(SelectMultiple):
     @property
     def media(self):
         return forms.Media(
-            css={"all": ("vendor/select2/css/select2.min.css",)},
-            js=("vendor/select2/js/select2.min.js",),
+            css={
+                "all": (
+                    "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css",
+                )
+            },
+            js=(
+                "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js",
+            ),
         )
