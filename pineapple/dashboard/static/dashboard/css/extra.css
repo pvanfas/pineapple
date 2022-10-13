@@ -63,7 +63,9 @@ select.form-control-sm~.select2-container--default {
     padding-left: 15px;
     padding-right: 20px;
 }
-
+.form-inline .form-group {
+    margin-bottom: 1rem;
+}
 .vTextField,
 .vLargeTextField,
 .vURLField,

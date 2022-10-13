@@ -70,7 +70,7 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     # Related Modal #
     #################
     # Activate Bootstrap modal
-    "related_modal_active": False,
+    "related_modal_active": True,
     #############
     # UI Tweaks #
     #############

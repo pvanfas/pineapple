@@ -2,13 +2,13 @@ import logging
 from typing import Any, Callable, Union
 from urllib.parse import urlencode
 
-from dashboard.compat import NoReverseMatch, reverse
 from django.apps import apps
 from django.contrib.admin import ListFilter
 from django.contrib.admin.helpers import AdminForm
 from django.contrib.auth.models import AbstractUser
 from django.db.models.base import Model, ModelBase
 from django.db.models.options import Options
+from django.urls import NoReverseMatch, reverse
 from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
