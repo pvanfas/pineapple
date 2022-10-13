@@ -1,0 +1,320 @@
+{% load i18n static dashboard admin_urls %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+{% get_dashboard_settings request as dashboard_settings %}
+{% get_dashboard_ui_tweaks as dashboard_ui %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!--  Prevent admin panel being crawled by search engines -->
+    <meta name="robots" content="none, noarchive">
+
+    <title>{% block title %}{{ title }} | {{ dashboard_settings.site_title }}{% endblock %}</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="{% static "vendor/fontawesome-free/css/all.min.css" %}">
+
+    <!-- Bootstrap and adminLTE -->
+    <link rel="stylesheet" href="{% static "vendor/adminlte/css/adminlte.min.css" %}" id="adminlte-css">
+
+    <!-- Custom fixes for django -->
+    <link rel="stylesheet" href="{% static "dashboard/css/main.css" %}">
+    <link rel="stylesheet" href="{% static "dashboard/css/extra.css" %}">
+
+    {% if dashboard_settings.custom_css %}
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static dashboard_settings.custom_css %}">
+    {% endif %}
+
+    <!-- favicons -->
+    <link rel="shortcut icon" href="{% static dashboard_settings.site_icon %}" type="image/png">
+    <link rel="icon" href="{% static dashboard_settings.site_icon %}" sizes="32x32" type="image/png">
+
+    {% if dashboard_settings.use_google_fonts_cdn %}
+    <!-- Google Font: Mulish -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    {% endif %}
+
+    {% block extrastyle %} {% endblock %}
+    {% block extrahead %} {% endblock %}
+</head>
+<body class="hold-transition{% if not dashboard_settings.show_sidebar %} no-sidebar{% else %} sidebar-mini{% endif %} {% sidebar_status request %} {% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %} {{ dashboard_ui.body_classes }}" data-admin-utc-offset="{% now "Z" %}">
+
+<div class="wrapper">
+
+    {% if not is_popup %}
+        <nav class="main-header navbar navbar-expand {{ dashboard_ui.navbar_classes }}" id="jazzy-navbar">
+            <ul class="navbar-nav">
+
+                {% if dashboard_settings.show_sidebar %}
+                    <li class="nav-item">
+                        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'admin:index' %}" class="brand-link">
+                            <img src="{% static dashboard_settings.site_logo %}" alt="{{ dashboard_settings.site_header }} Logo" class="{{ dashboard_settings.site_logo_classes }} brand-image" style="opacity: .8; margin: 0 0 0 5px;">
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% get_top_menu user request.current_app|default:"admin" as top_menu %}
+                {% for link in top_menu %}
+                    <li class="nav-item d-none d-sm-inline-block{% if link.children %} dropdown{% endif %}">
+                        {% if link.children %}
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ link.name }}
+                            </a>
+                            <div class="dropdown-menu">
+                                {% for child in link.children %}
+                                    <a class="dropdown-item" href="{{ child.url }}" {% if link.new_window %}target="_blank"{% endif %}>{{ child.name }}</a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <a href="{{ link.url }}" class="nav-link" {% if link.new_window %}target="_blank"{% endif %}>{{ link.name }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            {% if dashboard_settings.search_model %}
+                <form action="{{ dashboard_settings.search_url }}" method="GET" class="form-inline ml-3">
+                    <div class="input-group input-group-sm">
+                        <input class="form-control form-control-sm form-control form-control-sm-navbar" name="q" type="search" placeholder="{% trans 'Search' %} {{ dashboard_settings.search_name }}..." aria-label="{% trans 'Search' %} {{ dashboard_settings.search_name }}...">
+                        <div class="input-group-append">
+                            <button class="btn btn-navbar" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+
+            <ul class="navbar-nav ml-auto">
+
+                {% if 'django.contrib.admindocs'|app_is_installed %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'django-admindocs-docroot' %}" role="button">
+                        <i class="fas fa-book"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if dashboard_settings.language_chooser %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% get_language_info_list for LANGUAGES as languages %}
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link btn" data-toggle="dropdown" href="#" title="Choose language">
+                            <i class="fas fa-globe" aria-hidden="true"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left" id="jazzy-languagemenu">
+                            <form action="{% url 'set_language' %}" method="post">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.get_full_path|remove_lang:LANGUAGE_CODE }}" />
+                                {% for language in languages %}
+                                    <button
+                                        type="submit"
+                                        name="language"
+                                        value="{{ language.code }}"
+                                        class="dropdown-item {% if language.code == LANGUAGE_CODE %}active{% endif %}"
+                                        lang="{{ language.code }}"
+                                    >
+                                        {{ language.name_local|title }}
+                                    </button>
+                                {% endfor %}
+                            </form>
+                        </div>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link btn" data-toggle="dropdown" href="#" title="{{ request.user }}">
+                        <img src="{% static 'dashboard/img/user.svg' %}" class="user-image" alt="User Image" style="width:30px;">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left" id="jazzy-usermenu">
+                        <span class="dropdown-header">{% trans 'Account' %}</span>
+                        <div class="dropdown-divider"></div>
+                        <a href="{% url 'admin:password_change' %}" class="dropdown-item">
+                            <i class="fas fa-key mr-2"></i> {% trans 'Change password' %}
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{% url 'admin:logout' %}" class="dropdown-item">
+                            <i class="fas fa-users mr-2"></i> {% trans 'Log out' %}
+                        </a>
+                        {% get_user_menu user request.current_app|default:"admin" as user_menu %}
+                        {% for link in user_menu %}
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ link.url }}" class="dropdown-item" {% if link.new_window %}target="_blank"{% endif %}>
+                                <i class="{{ link.icon }} mr-2"></i> {% trans link.name %}
+                            </a>
+                        {% endfor %}
+                        <div class="dropdown-divider"></div>
+                        {% if perms|can_view_self %}
+                            <a href="{% jazzy_admin_url request.user request.current_app|default:"admin" %}" class="dropdown-item dropdown-footer">{% trans 'See Profile' %}</a>
+                        {% endif %}
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        {% block sidebar %}
+        {% if dashboard_settings.show_sidebar %}
+            {% get_side_menu as side_menu_list %}
+
+            <aside class="main-sidebar elevation-1 {{ dashboard_ui.sidebar_classes }}" id="jazzy-sidebar">
+                <a href="{% url 'admin:index' %}" class="brand-link {{ dashboard_ui.brand_classes }}" id="jazzy-logo">
+                    <img src="{% static dashboard_settings.site_logo %}" alt="{{ dashboard_settings.site_header }} Logo" class="{{ dashboard_settings.site_logo_classes }} brand-image elevation-3" style="opacity: .8">
+                    <span class="brand-text">{{ dashboard_settings.site_brand }}</span>
+                </a>
+
+                <div class="sidebar">
+
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column {{ dashboard_ui.sidebar_list_classes }}" data-widget="treeview" role="menu" data-collapsible="false">
+
+                            {% if dashboard_settings.navigation_expanded %}
+                                {% for app in side_menu_list %}
+                                    <li class="nav-header">{{ app.name }}</li>
+                                    {% for model in app.models %}
+                                        <li class="nav-item">
+                                            {% if model.url %}
+                                            <a href="{{ model.url }}" class="nav-link">
+                                                <i class="nav-icon {{ model.icon }}"></i> <p>{{ model.name }}</p>
+                                            </a>
+                                        {% else %}
+                                            <span class="nav-link disabled">
+                                                <i class="nav-icon {{ model.icon }}"></i> <p>{{ model.name }}</p>
+                                            </span>
+                                        {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                {% for app in side_menu_list %}
+                                    <li class="nav-item has-treeview">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon {{ app.icon }}"></i>
+                                            <p>{{ app.name|truncatechars:21 }} <i class="fas fa-angle-left right"></i></p>
+                                        </a>
+                                        <ul class="nav nav-treeview" style="display: none;">
+                                            {% for model in app.models %}
+                                                <li class="nav-item">
+                                                    <a href="{% if model.url %}{{ model.url }}{% else %}javascript:void(0){% endif %}" class="nav-link">
+                                                        <i class="nav-icon {{ model.icon }}"></i>
+                                                        <p>{{ model.name }}</p>
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+        {% endif %}
+        {% endblock %}
+    {% endif %}
+
+    <div class="content-wrapper" {% if is_popup %}style="margin-left:0px; padding-top: 20px;"{% endif %}>
+        {% block page_content %}
+            {% if not is_popup %}
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-auto col-sm-4">
+                            <h1 class="m-0">{% block content_title %}{% endblock %}</h1>
+                        </div>
+                        <div class="col-auto col-sm-8">
+                            {% block breadcrumbs %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="content">
+                <div class="container-fluid">
+                    <section id="content" class="content">
+                        {% block messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'success' %}
+                                    <div class="alert alert-success alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                        </button>
+                                        <i class="icon fa fa-check"></i>{{ message|capfirst }}
+                                    </div>
+                                {% elif message.tags == 'error' %}
+                                    <div class="alert alert-danger alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                        </button>
+                                        <i class="icon fa fa-ban"></i>{{ message|capfirst }}
+                                    </div>
+                                {% elif message.tags == 'warning' %}
+                                    <div class="alert alert-warning alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                        </button>
+                                        <i class="icon fa fa-exclamation-triangle"></i>{{ message|capfirst }}
+                                    </div>
+                                {% elif message.tags == 'info' %}
+                                    <div class="alert alert-info alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                        </button>
+                                        <i class="icon fa fa-info"></i>{{ message|capfirst }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endblock messages %}
+                        <div class="row">
+                            {% block content %} {% endblock %}
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+
+        {% endblock %}
+    </div>
+
+{% block footer %}
+    {% if not is_popup %}
+        <footer class="main-footer {{ dashboard_ui.footer_classes }}">
+            <div class="float-right d-none d-sm-inline">
+                <b>{% trans 'Dashboard version' %}</b> {% get_dashboard_version %}
+            </div>
+            {% autoescape off %}
+                <strong>{% trans 'Copyright' %} &copy; {% now 'Y' %} {{ dashboard_settings.copyright }}.</strong> {% trans 'All rights reserved.' %}
+            {% endautoescape %}
+        </footer>
+
+    {% endif %}
+{% endblock %}
+
+</div>
+
+
+<!-- jQuery -->
+<script src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static "vendor/bootstrap/js/bootstrap.min.js" %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static "vendor/adminlte/js/adminlte.min.js" %}"></script>
+<!-- Django customisations -->
+<script src="{% static "dashboard/js/main.js" %}"></script>
+
+{% if dashboard_settings.custom_js %}
+<script src="{% static dashboard_settings.custom_js %}"></script>
+{% endif %}
+
+
+{% block extrajs %}{% endblock %}
+
+</body>
+</html>
