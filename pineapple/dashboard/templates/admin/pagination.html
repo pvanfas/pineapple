@@ -1,7 +1,7 @@
 {% load admin_list dashboard i18n %}
 {% get_dashboard_ui_tweaks as dashboard_ui %}
 
-<div class="col-5">
+<div class="col-5 mt-3">
     <div class="dataTables_info" role="status" aria-live="polite">
         {{ cl.result_count }}
         {% if cl.result_count == 1 %}
