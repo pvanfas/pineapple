@@ -36,16 +36,20 @@
 {% block coltype %}flex{% endblock %}
 
 {% block content %}
+
+    <div class="col-12">
+        <div class="card-tools form-inline">
+            {% block date_hierarchy %}{% if cl.date_hierarchy %}{% date_hierarchy cl %}{% endif %}{% endblock %}
+            {% block search %}
+                {% search_form cl %}
+            {% endblock %}
+        </div>
+    </div>
+
     <div class="col-12">
         <div class="card card-primary">
             <div class="card-header">
                 <h4 class="card-title">{{ title }}{% block pretitle %}{% endblock %}</h4>
-                <div class="card-tools form-inline">
-                    {% block date_hierarchy %}{% if cl.date_hierarchy %}{% date_hierarchy cl %}{% endif %}{% endblock %}
-                    {% block search %}
-                        {% search_form cl %}
-                    {% endblock %}
-                </div>
             </div>
 
             <div class="card-body">
