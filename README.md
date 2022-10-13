@@ -7,9 +7,12 @@ A Django Dashboard you always wished for
 
 License: MIT
 
-## Settings
+## Technology Stack
 
-Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
+* [Python 3.6/+](https://www.python.org/)
+* [Django Web Framework 4.0/+](https://www.djangoproject.com/)
+* [PostgreSQL](https://www.postgresql.org/)
+* [CookieCutter](http://cookiecutter-django.readthedocs.io/en/latest/index.html)
 
 ## Basic Commands
 
@@ -48,3 +51,8 @@ Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readt
 ## Deployment
 
 The following details how to deploy this application.
+
+#### Heroku
+See detailed [cookiecutter-django Heroku documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html)
+#### Docker
+See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html)
